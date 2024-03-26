@@ -12,6 +12,7 @@ export class PetsService {
     }
 
     async findAll():Promise<Pet[]> {
+        //select * from pets
         return this.petRepository.find();
     }
 
@@ -20,4 +21,17 @@ export class PetsService {
         return this.petRepository.save(newPet);
     }
 
+    async findOne(id : number):Promise<Pet> {
+        //Select * ... limit 1
+        //Anyone migrating from NestJs v7 to v9 will 
+        //run into this issue because they use different TypeORM versions.
+        
+        //Old way now it not compile
+        //return this.petRepository.findOneOrFail(id);
+
+        //OK
+        //return this.petRepository.findOneByOrFail({id:id});
+
+        return this.petRepository.findOneOrFail({where:{id: id}});
+    }
 }
