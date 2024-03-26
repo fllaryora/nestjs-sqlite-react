@@ -1,20 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject , forwardRef} from '@nestjs/common';
 import { CreateOwnerInput } from './dto/create-owner.input';
 import { UpdateOwnerInput } from './dto/update-owner.input';
+import { Owner } from './entities/owner.entity';
+import { Pet } from 'src/pets/pet.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PetsService } from 'src/pets/pets.service';
 
 @Injectable()
 export class OwnersService {
-  create(createOwnerInput: CreateOwnerInput) {
-    return 'This action adds a new owner';
+
+  constructor(
+    @InjectRepository(Owner) private ownerRepository: Repository<Owner>,
+   // @Inject(forwardRef(() => PetsService))
+   // private petService: PetsService
+   ){
+
   }
 
-  findAll() {
-    return `This action returns all owners`;
+  async create(createOwnerInput: CreateOwnerInput): Promise<Owner> {
+    const newOwner = this.ownerRepository.create(createOwnerInput);
+    return this.ownerRepository.save(newOwner);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} owner`;
+  async findAll(): Promise<Owner[]> {
+    return this.ownerRepository.find();
   }
+
+  async findOne(id: number) : Promise<Owner> {
+    return this.ownerRepository.findOneOrFail({where:{id: id}});
+  }
+
+  /*
+    Permite la busqueda
+    */
+  //  async getPets(ownerId : number):Promise<Pet[]> {
+  //    return this.petService.findByOwner(ownerId);
+  // }
 
   update(id: number, updateOwnerInput: UpdateOwnerInput) {
     return `This action updates a #${id} owner`;
