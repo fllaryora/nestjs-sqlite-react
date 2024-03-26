@@ -29,7 +29,9 @@ export class PetsResolver {
     */
 
     @Mutation(returns => Pet)
-    createPet(@Args('createPetInput') createPetInput: CreatePetInput) :Promise <Pet> {
+    async createPet(
+        @Args('createPetInput') createPetInput: CreatePetInput
+        ) :Promise <Pet> {
         return this.petsService.createPet(createPetInput);
     }
 }
