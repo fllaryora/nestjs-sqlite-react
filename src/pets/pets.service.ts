@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Pet } from './pet.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,7 +11,7 @@ export class PetsService {
 
     constructor(
         @InjectRepository(Pet) private petRepository: Repository<Pet>,
-        private ownerService: OwnersService
+        private ownerService: OwnersService,
         ){
 
     }
@@ -22,6 +22,10 @@ export class PetsService {
     }
 
     async createPet(createInput: CreatePetInput):Promise<Pet> {
+        const owner = this.ownerService.findOne(createInput.ownerId);
+        if(owner === null) {
+            throw new NotFoundException("owner not found");
+        }
         const newPet = this.petRepository.create(createInput);
         return this.petRepository.save(newPet);
     }

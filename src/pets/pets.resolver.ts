@@ -12,6 +12,7 @@ import { Owner } from 'src/owners/entities/owner.entity';
 
 @Resolver( (of) => Pet)
 export class PetsResolver {
+    
     constructor(private petsService: PetsService){
 
     }
@@ -26,7 +27,7 @@ export class PetsResolver {
         pets{name, owner {name}},
   
     }*/
-    @Query(returns => [Pet])
+    @Query(() => [Pet], { name: 'pets' })
     pets():Promise<Pet[]> {
         return this.petsService.findAll();
     }
@@ -55,7 +56,7 @@ export class PetsResolver {
         name
      }
     }*/
-    @Query(returns => Pet)
+    @Query(returns => Pet, { name: 'getPet' })
     getPet(
         @Args('id', {type: () => Int}) id: number
     ):Promise<Pet> {
@@ -63,7 +64,7 @@ export class PetsResolver {
     }
 
     @ResolveField(returns => Owner)
-    owner( @Parent() pet: Pet): Promise<Owner> {
+    async  owner( @Parent() pet: Pet): Promise<Owner> {
      return this.petsService.getOwner(pet.ownerId);   
     }
 }

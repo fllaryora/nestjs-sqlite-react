@@ -33,28 +33,18 @@ export class OwnersResolver {
   }*/
 
   @Query(() => [Owner], { name: 'owners' })
-  findAll() {
+  owners() {
     return this.ownersService.findAll();
   }
 
- // @ResolveField(returns => Owner)
- //   pets( @Parent() owner: Owner): Promise<Pet[]> {
- //    return this.ownersService.getPets(owner.id);   
- //   }
+  //@ResolveField(returns => [Pet])
+  // async pets( @Parent() owner: Owner): Promise<Pet[]> {
+  //   return owner.pets;   
+  //}
 
-  @Query(() => Owner, { name: 'owner' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  @Query(() => Owner, { name: 'getOwner' })
+  getOwner(@Args('id', { type: () => Int }) id: number) {
     return this.ownersService.findOne(id);
-  }
-
-  @Mutation(() => Owner)
-  updateOwner(@Args('updateOwnerInput') updateOwnerInput: UpdateOwnerInput) {
-    return this.ownersService.update(updateOwnerInput.id, updateOwnerInput);
-  }
-
-  @Mutation(() => Owner)
-  removeOwner(@Args('id', { type: () => Int }) id: number) {
-    return this.ownersService.remove(id);
   }
 
 
